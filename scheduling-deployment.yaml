@@ -13,8 +13,16 @@ spec:
       labels:
         app: college-portal
     spec:
-      nodeSelector:
-        training: devops
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: training
+                operator: In
+                values:
+                - devops
+
       containers:
       - name: college-portal-container
         image: kajapathyk/duniversity-college-portal:latest
