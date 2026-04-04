@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: college-portal
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: college-portal
+  template:
+    metadata:
+      labels:
+        app: college-portal
+    spec:
+      nodeSelector:
+        training: devops
+      containers:
+      - name: college-portal-container
+        image: kajapathyk/duniversity-college-portal:latest
+        ports:
+        - containerPort: 3000 
