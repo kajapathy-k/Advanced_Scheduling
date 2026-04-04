@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: college-mysql
-  namespace: gateway-ns
+  namespace: scheduling-ns
 spec:
   serviceName: college-mysql-service
   replicas: 2
