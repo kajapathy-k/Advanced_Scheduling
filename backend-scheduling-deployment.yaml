@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: college-mysql
+  namespace: gateway-ns
+spec:
+  serviceName: college-mysql-service
+  replicas: 2
+  minReadySeconds: 10
+
+  updateStrategy:
+    type: RollingUpdate
+
+  selector:
+    matchLabels:
+      app: college-mysql
+
+  template:
+    metadata:
+      labels:
+        app: college-mysql
+
+    spec:
+      terminationGracePeriodSeconds: 10
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - college-mysql
+              topologyKey: "kubernetes.io/hostname"
+
+      containers:
+        - name: mariadb
+          image: mariadb:10.5
+          ports:
+            - containerPort: 3306
+
+          envFrom:
+            - configMapRef:
+                name: college-config
+            - secretRef:
+                name: college-secret
+
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+          volumeMounts:
+            - name: college-mysql-pvc
+              mountPath: /var/lib/mysql
+
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
+
+      volumes:
+        - name: mysql-initdb
+          configMap:
+            name: mysql-init-script
+
+  volumeClaimTemplates:
+    - metadata:
+        name: college-mysql-pvc
+      spec:
+        accessModes: ["ReadWriteMany"]
+        storageClassName: nfs-csi-storage
+        resources:
+          requests:
+            storage: 2Gi
