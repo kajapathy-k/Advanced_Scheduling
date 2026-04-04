@@ -69,11 +69,11 @@ spec:
             name: mysql-init-script
 
   volumeClaimTemplates:
-    - metadata:
-        name: college-mysql-pvc
-      spec:
-        accessModes: ["ReadWriteMany"]
-        storageClassName: nfs-csi-storage
-        resources:
-          requests:
-            storage: 2Gi
+  - metadata:
+      name: college-mysql-pvc
+    spec:
+      accessModes: ["ReadWriteMany"]
+      storageClassName: nfs-client
+      resources:
+        requests:
+          storage: 2Gi
