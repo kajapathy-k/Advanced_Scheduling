@@ -23,6 +23,16 @@ spec:
                 values:
                 - devops
 
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - college-portal
+            topologyKey: "kubernetes.io/hostname"
+
       containers:
       - name: college-portal-container
         image: kajapathyk/duniversity-college-portal:latest
