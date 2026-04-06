@@ -1,30 +1,28 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: college-mysql
+  name: backend-app
   namespace: scheduling-ns
 spec:
-  serviceName: college-mysql-service
   replicas: 2
-  minReadySeconds: 10
-
-  updateStrategy:
-    type: RollingUpdate
-
   selector:
     matchLabels:
-      app: college-mysql
+      app: backend-app
 
   template:
     metadata:
       labels:
-        app: college-mysql
+        app: backend-app
 
     spec:
-      terminationGracePeriodSeconds: 10
+      # tolerations:
+      # - key: "training"
+      #   operator: "Equal"
+      #   value: "devops"
+      #   effect: "NoSchedule"
 
       # affinity:
-      #   podAntiAffinity:
+      #   podAffinity:
       #     preferredDuringSchedulingIgnoredDuringExecution:
       #     - weight: 100
       #       podAffinityTerm:
@@ -33,47 +31,11 @@ spec:
       #           - key: app
       #             operator: In
       #             values:
-      #             - college-mysql
+      #             - college-portal
       #         topologyKey: "kubernetes.io/hostname"
 
       containers:
-        - name: mariadb
-          image: mariadb:10.5
-          ports:
-            - containerPort: 3306
-
-          envFrom:
-            - configMapRef:
-                name: college-config
-            - secretRef:
-                name: college-secret
-
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-
-          volumeMounts:
-            - name: college-mysql-pvc
-              mountPath: /var/lib/mysql
-
-            - name: mysql-initdb
-              mountPath: /docker-entrypoint-initdb.d
-
-      volumes:
-        - name: mysql-initdb
-          configMap:
-            name: mysql-init-script
-
-  volumeClaimTemplates:
-  - metadata:
-      name: college-mysql-pvc
-    spec:
-      accessModes: ["ReadWriteMany"]
-      storageClassName: nfs-client
-      resources:
-        requests:
-          storage: 2Gi
+      - name: backend-container
+        image: nginx
+        ports:
+        - containerPort: 80
