@@ -13,28 +13,33 @@ spec:
       labels:
         app: college-portal
     spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-              - key: training
-                operator: In
-                values:
-                - devops
+      tolerations:
+      - key: "training"
+        operator: "Equal"
+        value: "devops"
+        effect: "NoSchedule"
+      # affinity:
+      #   nodeAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       preference:
+      #         matchExpressions:
+      #         - key: training
+      #           operator: In
+      #           values:
+      #           - devops
 
-        podAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - college-portal
-              topologyKey: "kubernetes.io/hostname"
+        # podAffinity:
+        #   preferredDuringSchedulingIgnoredDuringExecution:
+        #   - weight: 100
+        #     podAffinityTerm:
+        #       labelSelector:
+        #         matchExpressions:
+        #         - key: app
+        #           operator: In
+        #           values:
+        #           - college-portal
+        #       topologyKey: "kubernetes.io/hostname"
 
       containers:
       - name: college-portal-container
