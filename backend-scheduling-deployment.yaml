@@ -23,18 +23,18 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
 
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - college-mysql
-              topologyKey: "kubernetes.io/hostname"
+      # affinity:
+      #   podAntiAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       podAffinityTerm:
+      #         labelSelector:
+      #           matchExpressions:
+      #           - key: app
+      #             operator: In
+      #             values:
+      #             - college-mysql
+      #         topologyKey: "kubernetes.io/hostname"
 
       containers:
         - name: mariadb
